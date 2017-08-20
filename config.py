@@ -13,6 +13,7 @@ class Config:
         config.read("%s/resources/config.cfg" % dir_path)
         self.username = config["user"]["username"]
         self.password = config["user"]["password"]
+        self.mysql_address = config["mysql"]["url"]
 
 
 if __name__ == '__main__':
