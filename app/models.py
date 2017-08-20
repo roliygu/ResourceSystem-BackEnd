@@ -7,7 +7,7 @@ from . import db
 class Resource(db.Model):
     __tablename__ = 'resource'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, index=True, nullable=False)
+    name = db.Column(db.String(256), index=True, nullable=False)
     binary = db.Column(db.LargeBinary)
     create_time = db.Column(db.Time)
     update_time = db.Column(db.Time)
@@ -16,7 +16,7 @@ class Resource(db.Model):
 class Tag(db.Model):
     __tablename__ = 'tag'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, index=True, nullable=False)
+    name = db.Column(db.String(256), index=True, nullable=False)
 
 
 class ResourceTagRe(db.Model):
