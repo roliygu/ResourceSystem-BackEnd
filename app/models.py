@@ -1,7 +1,7 @@
 #! usr/bin/python
 # coding=utf-8
 
-from app.application import db
+from . import db
 
 
 class Resource(db.Model):

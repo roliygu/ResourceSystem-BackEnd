@@ -1,10 +1,9 @@
 #! usr/bin/python
 # coding=utf-8
 
+from flask import Blueprint
 
-def main():
-    pass
+main = Blueprint('main', __name__)
 
-
-if __name__ == '__main__':
-    main()
+# 避免循环引入，特地放到最后import
+from . import views, errors

@@ -3,7 +3,7 @@
 
 from config import Config
 from app.vo.view_object import ValidateResult
-from app.vo.view_object import LoginForm
+from app.main.forms import LoginForm
 
 
 def validate_user(form: LoginForm):
