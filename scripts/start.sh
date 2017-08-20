@@ -2,4 +2,4 @@
 
 source venv/bin/activate
 
-nohup python3 manage.py &
+nohup ython3 manage.py runserver -p 5000 &
