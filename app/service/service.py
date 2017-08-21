@@ -4,7 +4,7 @@
 import datetime
 
 from config import Config
-from app.vo.view_object import ValidateResult, UploadResult
+from app.vo.view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
 from app.main.forms import LoginForm, UploadForm
 from app.models import Resource
 from app.utils.utils import save_file_storage
@@ -33,3 +33,13 @@ def insert_resource(form: UploadForm):
     resource.update_time = datetime.datetime.now()
     resource.insert()
     return UploadResult(True, "[{}]上传成功".format(resource.name))
+
+
+def scan_resource():
+    scan_res = Resource.query.limit(20)
+    row_list = []
+    for row in scan_res:
+        col_list = [TableCell(row.name), TableCell(row.origin_name), TableCell(row.path),
+                    TableCell(row.create_time), TableCell(row.update_time)]
+        row_list.append(col_list)
+    return Table(ResourceHeader, row_list)

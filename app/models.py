@@ -15,6 +15,7 @@ class Resource(db.Model):
     path = db.Column(DEFAULT_STRING_COL, index=True, nullable=False)
     create_time = db.Column(db.TIMESTAMP)
     update_time = db.Column(db.TIMESTAMP)
+    # todo 增加文件大小
 
     def insert(self):
         db.session.add(self)
