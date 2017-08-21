@@ -14,6 +14,7 @@ class Config:
         self.username = config["user"]["username"]
         self.password = config["user"]["password"]
         self.mysql_address = config["mysql"]["url"]
+        self.upload_base_dir = config["storage"]["base_dir"]
 
 
 if __name__ == '__main__':

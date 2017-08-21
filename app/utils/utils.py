@@ -2,11 +2,15 @@
 # coding=utf-8
 
 import random
+import uuid
 
 from flask import make_response
+from werkzeug.datastructures import FileStorage
 
 from app.vo.view_object import ValidateResult
 from config import Config
+
+config = Config()
 
 
 def generate_random_integer():
@@ -21,8 +25,13 @@ def warp_response(res: ValidateResult):
 
 
 def get_mysql_url():
-    config = Config()
     return config.mysql_address
+
+
+def save_file_storage(file_storage: FileStorage):
+    path = "{}/{}_{}".format(config.upload_base_dir, uuid.uuid1(), file_storage.name)
+    file_storage.save(path)
+    return path
 
 
 def main():

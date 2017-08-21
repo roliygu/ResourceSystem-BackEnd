@@ -6,3 +6,9 @@ class ValidateResult:
     def __init__(self, success, message):
         self.success = success
         self.message = message
+
+
+class UploadResult:
+    def __init__(self, success, message):
+        self.success = success
+        self.message = message
