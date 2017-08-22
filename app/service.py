@@ -2,9 +2,10 @@
 # coding=utf-8
 
 from os.path import getsize
+import datetime
 
 from app.forms import LoginForm, UploadForm
-from app.models import Resource, User, insert, delete
+from app.models import Resource, User, insert, delete, update
 from app.utils import save_file_storage
 from app.view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
 from config import Config
@@ -37,6 +38,11 @@ def insert_resource(form: UploadForm):
 
 def delete_resource(resource: Resource):
     delete(resource)
+
+
+def update_resource(resource: Resource):
+    resource.update_time = datetime.datetime.now()
+    update(resource)
 
 
 def scan_resource():

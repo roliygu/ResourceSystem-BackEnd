@@ -6,9 +6,9 @@ import os
 from flask import render_template, flash, send_file, abort, redirect, url_for
 from flask_login import login_required
 
-from app.service import validate_upload, insert_resource, scan_resource, get_resource, delete_resource
+from app.service import validate_upload, insert_resource, scan_resource, get_resource, delete_resource, update_resource
 from . import main
-from ..forms import UploadForm
+from ..forms import UploadForm, ResourceEditForm
 
 
 def redirect_index():
@@ -37,6 +37,22 @@ def upload():
     return render_template('main/upload.html', form=form)
 
 
+@main.route('/resource/edit/<int:resource_id>', methods=['GET', 'POST'])
+@login_required
+def edit(resource_id: int):
+    form = ResourceEditForm()
+    if form.validate_on_submit():
+        resource = get_resource(resource_id)
+        if resource:
+            resource.name = form.name.data
+            update_resource(resource)
+            flash("更新成功")
+            return redirect_index()
+        flash("找不到资源")
+        return redirect_index()
+    return render_template('main/edit.html', form=form)
+
+
 @main.route('/resource/download/<int:resource_id>', methods=['GET'])
 @login_required
 def download(resource_id: int):
@@ -44,12 +60,6 @@ def download(resource_id: int):
     path = resource.path
     if os.path.isfile(path):
         return send_file(path, attachment_filename=resource.origin_name)
-    abort(404)
-
-
-@main.route('/resource/edit/<int:resource_id>', methods=['GET'])
-@login_required
-def edit(resource_id: int):
     abort(404)
 
 

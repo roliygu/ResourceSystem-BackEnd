@@ -27,6 +27,12 @@ def delete(item: db.Model, now=False):
         db.session.commit()
 
 
+def update(item: db.Model, now=False):
+    db.session.add(item)
+    if now:
+        db.session.commit()
+
+
 class Resource(db.Model):
     __tablename__ = 'resource'
     id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
