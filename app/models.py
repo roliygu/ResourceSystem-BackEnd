@@ -10,7 +10,7 @@ from . import db
 from . import login_manager
 from config import Config
 
-DEFAULT_STRING_LENGTH = 256
+DEFAULT_STRING_LENGTH = 128
 DEFAULT_STRING_COL = db.String(DEFAULT_STRING_LENGTH)
 
 
