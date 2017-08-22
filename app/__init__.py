@@ -1,12 +1,10 @@
 #! usr/bin/python
 # coding=utf-8
 
-import os
-
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from flask_uploads import UploadSet, DEFAULTS, configure_uploads, patch_request_class
+from flask_uploads import patch_request_class
 from flask_login import LoginManager
 
 from app.utils import generate_random_integer, get_mysql_url
@@ -17,7 +15,6 @@ config = Config()
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 
-all_files = UploadSet('allfiles', DEFAULTS + ('pdf',))
 max_file_size = int(config.max_file_size) * 1024 * 1024
 
 login_manager = LoginManager()
@@ -36,8 +33,6 @@ def create_app():
     # db
     db.init_app(app)
     # upload
-    app.config['UPLOADED_ALLFILES_DEST'] = os.getcwd()
-    configure_uploads(app, all_files)
     patch_request_class(app, size=max_file_size)
     # login
     login_manager.init_app(app)
