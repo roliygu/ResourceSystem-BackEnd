@@ -13,7 +13,7 @@ from app.utils.utils import generate_random_integer, get_mysql_url
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 all_files = UploadSet('allfiles', DEFAULTS + ('pdf',))
-mb256 = 256 * 1024 * 1024
+mb1024 = 1024 * 1024 * 1024
 
 
 def create_app():
@@ -28,7 +28,7 @@ def create_app():
     # upload
     app.config['UPLOADED_ALLFILES_DEST'] = os.getcwd()
     configure_uploads(app, all_files)
-    patch_request_class(app, size=mb256)
+    patch_request_class(app, size=mb1024)
     # blueprint
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)

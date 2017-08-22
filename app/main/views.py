@@ -1,11 +1,13 @@
 #! usr/bin/python
 # coding=utf-8
 
-from flask import session, redirect, url_for, render_template, flash
+import os
+
+from flask import session, redirect, url_for, render_template, flash, send_file, abort
 
 from . import main
 from .forms import LoginForm, UploadForm
-from app.service.service import validate_user, validate_upload, insert_resource, scan_resource
+from app.service.service import validate_user, validate_upload, insert_resource, scan_resource, get_resource
 from app.utils.utils import generate_random_integer
 
 
@@ -47,3 +49,12 @@ def upload():
         else:
             flash(validate_res.message)
     return render_template('upload.html', form=form)
+
+
+@main.route('/download/<int:resource_id>', methods=['GET'])
+def download(resource_id: int):
+    resource = get_resource(resource_id)
+    path = resource.path
+    if os.path.isfile(path):
+        return send_file(path, attachment_filename=resource.origin_name)
+    abort(404)

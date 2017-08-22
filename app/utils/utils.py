@@ -29,14 +29,6 @@ def get_mysql_url():
 
 
 def save_file_storage(file_storage: FileStorage):
-    path = "{}/{}_{}".format(config.upload_base_dir, uuid.uuid1(), file_storage.name)
+    path = "{}/{}_{}".format(config.upload_base_dir, uuid.uuid1(), file_storage.filename)
     file_storage.save(path)
     return path
-
-
-def main():
-    pass
-
-
-if __name__ == '__main__':
-    main()
