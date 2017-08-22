@@ -27,6 +27,7 @@ class Resource(db.Model):
     name = db.Column(DEFAULT_STRING_COL, index=True, nullable=False)
     origin_name = db.Column(DEFAULT_STRING_COL, index=True, nullable=False)
     path = db.Column(DEFAULT_STRING_COL, index=True, nullable=False)
+    size = db.Column(db.BigInteger)
     create_time = db.Column(db.TIMESTAMP, default=datetime.datetime.now())
     update_time = db.Column(db.TIMESTAMP, default=datetime.datetime.now())
     # todo 增加文件大小

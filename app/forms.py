@@ -17,3 +17,9 @@ class UploadForm(FlaskForm):
     name = StringField('资源名', validators=[DataRequired()])
     binary = FileField('文件', validators=[DataRequired()])
     submit = SubmitField('确定')
+
+    def clean(self):
+        self.name.data = None
+        self.binary.data = None
+
+

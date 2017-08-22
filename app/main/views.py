@@ -3,7 +3,7 @@
 
 import os
 
-from flask import render_template, flash, send_file, abort
+from flask import render_template, flash, send_file, abort, redirect, url_for
 from flask_login import login_required
 
 from app.service import validate_upload, insert_resource, scan_resource, get_resource
@@ -11,15 +11,11 @@ from . import main
 from ..forms import UploadForm
 
 
-def render_index():
-    table = scan_resource()
-    return render_template('main/index.html', table=table)
-
-
 @main.route('/')
 @login_required
 def index():
-    return render_index()
+    table = scan_resource()
+    return render_template('main/index.html', table=table)
 
 
 @main.route('/upload', methods=['GET', 'POST'])
@@ -31,7 +27,7 @@ def upload():
         if validate_res.success:
             upload_res = insert_resource(form)
             flash(upload_res.message)
-            return render_index()
+            return redirect(url_for('main.index'))
         else:
             flash(validate_res.message)
     return render_template('main/upload.html', form=form)

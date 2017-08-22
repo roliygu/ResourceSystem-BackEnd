@@ -24,4 +24,6 @@ class Table:
         self.header = header
         self.data = data
 
-ResourceHeader = [TableCell("资源名"), TableCell("原始文件名"), TableCell("路径"), TableCell("创建时间"), TableCell("更新时间")]
+
+ResourceHeader = [TableCell("资源名"), TableCell("原始文件名"), TableCell("路径"), TableCell("大小"), TableCell("创建时间"),
+                  TableCell("更新时间")]

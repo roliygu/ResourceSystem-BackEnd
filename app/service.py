@@ -1,6 +1,8 @@
 #! usr/bin/python
 # coding=utf-8
 
+from os.path import getsize
+
 from app.forms import LoginForm, UploadForm
 from app.models import Resource, User, insert
 from app.utils import save_file_storage
@@ -28,6 +30,7 @@ def insert_resource(form: UploadForm):
     file_storage = form.binary.data
     resource.origin_name = file_storage.filename
     resource.path = save_file_storage(file_storage)
+    resource.size = getsize(resource.path)
     insert(resource, now=True)
     return UploadResult(True, "[{}]上传成功".format(resource.name))
 
@@ -37,9 +40,22 @@ def scan_resource():
     row_list = []
     for row in scan_res:
         col_list = [TableCell(row.name), TableCell(row.origin_name), TableCell(row.path),
-                    TableCell(row.create_time), TableCell(row.update_time)]
+                    TableCell(wrap_file_size(row.size)), TableCell(row.create_time), TableCell(row.update_time)]
         row_list.append(col_list)
     return Table(ResourceHeader, row_list)
+
+
+def wrap_file_size(size: int):
+    if size is None:
+        return "-"
+    if size > 1024 * 1024 * 1024:
+        return "%.2f GB" % (size/(1024 * 1024 * 1024))
+    elif size > 1024 * 1024:
+        return "%.2f MB" % (size / (1024 * 1024))
+    elif size > 1024:
+        return "%.2f KB" % (size / 1024)
+    else:
+        return "%.2f B" % size
 
 
 def get_resource(resource_id: int):
