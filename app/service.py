@@ -39,8 +39,10 @@ def scan_resource():
     scan_res = Resource.query.limit(config.item_num_per_page)
     row_list = []
     for row in scan_res:
-        col_list = [TableCell(row.name), TableCell(row.origin_name), TableCell(row.path),
-                    TableCell(wrap_file_size(row.size)), TableCell(row.create_time), TableCell(row.update_time)]
+        col_list = [TableCell(row.name), TableCell(row.origin_name),
+                    # TableCell(row.path),
+                    TableCell(wrap_file_size(row.size)), TableCell(row.create_time), TableCell(row.update_time),
+                    TableCell(build_option_html(row.id))]
         row_list.append(col_list)
     return Table(ResourceHeader, row_list)
 
@@ -49,13 +51,24 @@ def wrap_file_size(size: int):
     if size is None:
         return "-"
     if size > 1024 * 1024 * 1024:
-        return "%.2f GB" % (size/(1024 * 1024 * 1024))
+        return "%.2f GB" % (size / (1024 * 1024 * 1024))
     elif size > 1024 * 1024:
         return "%.2f MB" % (size / (1024 * 1024))
     elif size > 1024:
         return "%.2f KB" % (size / 1024)
     else:
         return "%.2f B" % size
+
+
+option_html_template = """
+<a href=\"resource/download/{}\"><span class=\"glyphicon glyphicon-save\" aria-hidden=\"true\"></span></a>&nbsp;&nbsp;
+<a href=\"resource/delete/{}\"<span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span></a>&nbsp;&nbsp;
+<a href=\"resource/edit/{}\"<span class=\"glyphicon glyphicon-edit\" aria-hidden=\"true\"></span></a>
+"""
+
+
+def build_option_html(resource_id):
+    return option_html_template.format(resource_id, resource_id, resource_id)
 
 
 def get_resource(resource_id: int):

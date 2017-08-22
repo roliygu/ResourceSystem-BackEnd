@@ -18,7 +18,7 @@
             {% for row in table.data %}
             <tr>
                 {% for col in row %}
-                <td>{{ col.value }}</td>
+                <td>{{ col.value | safe }}</td>
                 {% endfor %}
             </tr>
             {% endfor %}

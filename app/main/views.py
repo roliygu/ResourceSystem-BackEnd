@@ -18,7 +18,7 @@ def index():
     return render_template('main/index.html', table=table)
 
 
-@main.route('/upload', methods=['GET', 'POST'])
+@main.route('/resource/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     form = UploadForm()
@@ -33,11 +33,23 @@ def upload():
     return render_template('main/upload.html', form=form)
 
 
-@main.route('/download/<int:resource_id>', methods=['GET'])
+@main.route('/resource/download/<int:resource_id>', methods=['GET'])
 @login_required
 def download(resource_id: int):
     resource = get_resource(resource_id)
     path = resource.path
     if os.path.isfile(path):
         return send_file(path, attachment_filename=resource.origin_name)
+    abort(404)
+
+
+@main.route('/resource/edit/<int:resource_id>', methods=['GET'])
+@login_required
+def edit(resource_id: int):
+    abort(404)
+
+
+@main.route('/resource/delete/<int:resource_id>', methods=['GET'])
+@login_required
+def delete(resource_id: int):
     abort(404)
