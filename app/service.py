@@ -4,8 +4,8 @@
 from os.path import getsize
 import datetime
 
-from app.forms import LoginForm, UploadForm
-from app.models import Resource, User, insert, delete, update
+from app.forms import LoginForm, UploadForm, TagCreateForm
+from app.models import Resource, User, Tag, insert, delete, update
 from app.utils import save_file_storage
 from app.view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
 from config import Config
@@ -36,6 +36,12 @@ def insert_resource(form: UploadForm):
     return UploadResult(True, "[{}]上传成功".format(resource.name))
 
 
+def insert_tag(form: TagCreateForm):
+    tag = Tag()
+    tag.name = form.name.data
+    insert(tag, now=True)
+
+
 def delete_resource(resource: Resource):
     delete(resource)
 
@@ -55,6 +61,11 @@ def scan_resource():
                     TableCell(build_option_html(row.id))]
         row_list.append(col_list)
     return Table(ResourceHeader, row_list)
+
+
+def scan_tag():
+    scan_res = Tag.query.all()
+    return [item.name for item in scan_res]
 
 
 def wrap_file_size(size: int):
@@ -83,3 +94,7 @@ def build_option_html(resource_id):
 
 def get_resource(resource_id: int):
     return Resource.query.filter_by(id=resource_id).first()
+
+
+def get_tag(tag_name: str):
+    return Resource.query.filter_by(name=tag_name).first()

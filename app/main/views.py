@@ -6,9 +6,9 @@ import os
 from flask import render_template, flash, send_file, abort, redirect, url_for
 from flask_login import login_required
 
-from app.service import validate_upload, insert_resource, scan_resource, get_resource, delete_resource, update_resource
+from app.service import validate_upload, insert_resource, scan_resource, scan_tag, get_resource, delete_resource, update_resource, get_tag, insert_tag
 from . import main
-from ..forms import UploadForm, ResourceEditForm
+from ..forms import UploadForm, ResourceEditForm, TagCreateForm
 
 
 def redirect_index():
@@ -37,18 +37,31 @@ def upload():
     return render_template('main/upload.html', form=form)
 
 
+@main.route('/resource/delete/<int:resource_id>', methods=['GET'])
+@login_required
+def delete(resource_id: int):
+    msg = "删除成功"
+    resource = get_resource(resource_id)
+    if resource:
+        if os.path.exists(resource.path):
+            os.remove(resource.path)
+        delete_resource(resource)
+    flash(msg)
+    return redirect_index()
+
+
 @main.route('/resource/edit/<int:resource_id>', methods=['GET', 'POST'])
 @login_required
 def edit(resource_id: int):
     form = ResourceEditForm()
     if form.validate_on_submit():
         resource = get_resource(resource_id)
-        if resource:
-            resource.name = form.name.data
-            update_resource(resource)
-            flash("更新成功")
+        if not resource:
+            flash("找不到该资源")
             return redirect_index()
-        flash("找不到资源")
+        resource.name = form.name.data
+        update_resource(resource)
+        flash("更新成功")
         return redirect_index()
     return render_template('main/edit.html', form=form)
 
@@ -63,14 +76,17 @@ def download(resource_id: int):
     abort(404)
 
 
-@main.route('/resource/delete/<int:resource_id>', methods=['GET'])
+@main.route('/tag/create', methods=['GET', 'POST'])
 @login_required
-def delete(resource_id: int):
-    msg = "删除成功"
-    resource = get_resource(resource_id)
-    if resource:
-        if os.path.exists(resource.path):
-            os.remove(resource.path)
-        delete_resource(resource)
-    flash(msg)
-    return redirect_index()
+def create_tag():
+    form = TagCreateForm()
+    if form.validate_on_submit():
+        tag = get_tag(form.name.data)
+        if tag:
+            flash("标签已存在")
+            return redirect_index()
+        insert_tag(form)
+        flash("添加标签成功")
+        return redirect_index()
+    tag_names = scan_tag()
+    return render_template('main/create_tag.html', form=form, tag_names=tag_names)

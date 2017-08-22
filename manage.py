@@ -16,9 +16,8 @@ def init_db():
 
 
 @manager.command
-def reset_db():
+def drop_db():
     db.drop_all()
-    db.create_all()
 
 if __name__ == '__main__':
     manager.run()

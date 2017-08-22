@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}ResourceSystem - Login{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <div class="page-header">
+        <h1>创建标签</h1>
+    </div>
+    <div class="btn-group">
+        {% for tag_name in tag_names %}
+        <span class="label label-success">{{ tag_name }}</span>
+        {% endfor %}
+    </div>
+    {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}

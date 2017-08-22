@@ -22,3 +22,8 @@ class UploadForm(FlaskForm):
 class ResourceEditForm(FlaskForm):
     name = StringField('资源名', validators=[DataRequired()])
     submit = SubmitField('确定')
+
+
+class TagCreateForm(FlaskForm):
+    name = StringField('标签名称', validators=[DataRequired()])
+    submit = SubmitField('确定')
