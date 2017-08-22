@@ -1,19 +1,19 @@
 #! usr/bin/python
 # coding=utf-8
 
+from app.forms import LoginForm, UploadForm
+from app.models import Resource, User, insert
+from app.utils import save_file_storage
+from app.view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
 from config import Config
-from app.vo.view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
-from app.main.forms import LoginForm, UploadForm
-from app.models import Resource, insert
-from app.utils.utils import save_file_storage
 
 config = Config()
 
 
-def validate_user(form: LoginForm):
+def validate_user(form: LoginForm, user: User):
     if form.username.data != config.username:
         return ValidateResult(False, "用户名错误")
-    if form.password.data != config.password:
+    if not user.verify_password(form.password.data):
         return ValidateResult(False, "密码错误")
     return ValidateResult(True, "ok")
 

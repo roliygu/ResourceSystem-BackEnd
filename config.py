@@ -12,7 +12,7 @@ class Config:
         config = configparser.ConfigParser()
         config.read("%s/resources/config.cfg" % dir_path)
         self.username = config["user"]["username"]
-        self.password = config["user"]["password"]
+        self.password_hash = config["user"]["password_hash"]
         self.mysql_address = config["mysql"]["url"]
         self.mysql_scan_max_number = config["mysql"]["scan_max_number"]
         self.upload_base_dir = config["storage"]["base_dir"]

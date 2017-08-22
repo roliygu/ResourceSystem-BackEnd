@@ -15,8 +15,14 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                    <li><a href="/login">登录</a></li>
-                    <li><a href="/upload">上传新资源</a></li>
+                <li><a href="/upload">上传新资源</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                <li><a href="/auth/logout">退出</a></li>
+                {% else %}
+                <li><a href="/auth/login">登录</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

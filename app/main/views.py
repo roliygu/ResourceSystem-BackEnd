@@ -3,41 +3,27 @@
 
 import os
 
-from flask import session, redirect, url_for, render_template, flash, send_file, abort
+from flask import render_template, flash, send_file, abort
+from flask_login import login_required
 
+from app.service import validate_upload, insert_resource, scan_resource, get_resource
 from . import main
-from .forms import LoginForm, UploadForm
-from app.service.service import validate_user, validate_upload, insert_resource, scan_resource, get_resource
-from app.utils.utils import generate_random_integer
+from ..forms import UploadForm
 
 
 def render_index():
     table = scan_resource()
-    return render_template('index.html', table=table)
+    return render_template('main/index.html', table=table)
 
 
 @main.route('/')
+@login_required
 def index():
-    if "token" not in session:
-        return redirect(url_for('main.login'))
-    else:
-        return render_index()
-
-
-@main.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        validate_res = validate_user(form)
-        if validate_res.success:
-            session["token"] = generate_random_integer()
-            return redirect(url_for('main.index'))
-        else:
-            flash(validate_res.message)
-    return render_template('login.html', form=form)
+    return render_index()
 
 
 @main.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
     form = UploadForm()
     if form.validate_on_submit():
@@ -48,10 +34,11 @@ def upload():
             return render_index()
         else:
             flash(validate_res.message)
-    return render_template('upload.html', form=form)
+    return render_template('main/upload.html', form=form)
 
 
 @main.route('/download/<int:resource_id>', methods=['GET'])
+@login_required
 def download(resource_id: int):
     resource = get_resource(resource_id)
     path = resource.path

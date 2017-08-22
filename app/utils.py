@@ -7,7 +7,7 @@ import uuid
 from flask import make_response
 from werkzeug.datastructures import FileStorage
 
-from app.vo.view_object import ValidateResult
+from app.view_object import ValidateResult
 from config import Config
 
 config = Config()
