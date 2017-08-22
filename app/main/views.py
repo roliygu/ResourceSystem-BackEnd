@@ -6,9 +6,13 @@ import os
 from flask import render_template, flash, send_file, abort, redirect, url_for
 from flask_login import login_required
 
-from app.service import validate_upload, insert_resource, scan_resource, get_resource
+from app.service import validate_upload, insert_resource, scan_resource, get_resource, delete_resource
 from . import main
 from ..forms import UploadForm
+
+
+def redirect_index():
+    return redirect(url_for('main.index'))
 
 
 @main.route('/')
@@ -27,7 +31,7 @@ def upload():
         if validate_res.success:
             upload_res = insert_resource(form)
             flash(upload_res.message)
-            return redirect(url_for('main.index'))
+            return redirect_index()
         else:
             flash(validate_res.message)
     return render_template('main/upload.html', form=form)
@@ -52,4 +56,11 @@ def edit(resource_id: int):
 @main.route('/resource/delete/<int:resource_id>', methods=['GET'])
 @login_required
 def delete(resource_id: int):
-    abort(404)
+    msg = "删除成功"
+    resource = get_resource(resource_id)
+    if resource:
+        if os.path.exists(resource.path):
+            os.remove(resource.path)
+        delete_resource(resource)
+    flash(msg)
+    return redirect_index()

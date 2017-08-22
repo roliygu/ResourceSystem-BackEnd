@@ -4,7 +4,7 @@
 from os.path import getsize
 
 from app.forms import LoginForm, UploadForm
-from app.models import Resource, User, insert
+from app.models import Resource, User, insert, delete
 from app.utils import save_file_storage
 from app.view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
 from config import Config
@@ -33,6 +33,10 @@ def insert_resource(form: UploadForm):
     resource.size = getsize(resource.path)
     insert(resource, now=True)
     return UploadResult(True, "[{}]上传成功".format(resource.name))
+
+
+def delete_resource(resource: Resource):
+    delete(resource)
 
 
 def scan_resource():
