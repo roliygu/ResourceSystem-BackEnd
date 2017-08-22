@@ -10,12 +10,15 @@ from flask_uploads import UploadSet, DEFAULTS, configure_uploads, patch_request_
 from flask_login import LoginManager
 
 from app.utils import generate_random_integer, get_mysql_url
+from config import Config
+
+config = Config()
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 
 all_files = UploadSet('allfiles', DEFAULTS + ('pdf',))
-mb1024 = 1024 * 1024 * 1024
+max_file_size = int(config.max_file_size) * 1024 * 1024
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -35,7 +38,7 @@ def create_app():
     # upload
     app.config['UPLOADED_ALLFILES_DEST'] = os.getcwd()
     configure_uploads(app, all_files)
-    patch_request_class(app, size=mb1024)
+    patch_request_class(app, size=max_file_size)
     # login
     login_manager.init_app(app)
     # blueprint main

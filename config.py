@@ -16,9 +16,5 @@ class Config:
         self.mysql_address = config["mysql"]["url"]
         self.mysql_scan_max_number = config["mysql"]["scan_max_number"]
         self.upload_base_dir = config["storage"]["base_dir"]
+        self.max_file_size = config["storage"]["max_file_size"]
         self.item_num_per_page = int(config["preview_page"]["item_num_per_page"])
-
-
-if __name__ == '__main__':
-    conf = Config()
-    print(conf.password)
