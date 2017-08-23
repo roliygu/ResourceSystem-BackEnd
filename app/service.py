@@ -4,17 +4,14 @@
 from os.path import getsize
 import datetime
 
-from app.forms import LoginForm, UploadForm, TagCreateForm
-from app.models import Resource, User, Tag, insert, delete, update
-from app.utils import save_file_storage
-from app.view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
-from config import Config
-
-config = Config()
+from .forms import LoginForm, UploadForm, TagCreateForm
+from .models import Resource, User, Tag, insert, delete, update
+from .utils import save_file_storage, get_config
+from .view_object import ValidateResult, UploadResult, TableCell, Table, ResourceHeader
 
 
 def validate_user(form: LoginForm, user: User):
-    if form.username.data != config.username:
+    if form.username.data != get_config().username:
         return ValidateResult(False, "用户名错误")
     if not user.verify_password(form.password.data):
         return ValidateResult(False, "密码错误")
@@ -52,7 +49,7 @@ def update_resource(resource: Resource):
 
 
 def scan_resource():
-    scan_res = Resource.query.limit(config.item_num_per_page)
+    scan_res = Resource.query.limit(get_config().item_num_per_page)
     row_list = []
     for row in scan_res:
         col_list = [TableCell(row.name), TableCell(row.origin_name),

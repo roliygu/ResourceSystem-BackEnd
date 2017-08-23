@@ -7,15 +7,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_uploads import patch_request_class
 from flask_login import LoginManager
 
-from app.utils import generate_random_integer, get_mysql_url
-from config import Config
-
-config = Config()
+from .utils import generate_random_integer, get_mysql_url, get_config
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 
-max_file_size = int(config.max_file_size) * 1024 * 1024
+max_file_size = int(get_config().max_file_size) * 1024 * 1024
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'

@@ -19,5 +19,17 @@ def init_db():
 def drop_db():
     db.drop_all()
 
+
+@manager.command
+def run():
+    app.run(host='0.0.0.0', port=50000)
+
+
+@manager.command
+def generate_password_hash():
+    from werkzeug.security import generate_password_hash
+    print(generate_password_hash("aa"))
+
+
 if __name__ == '__main__':
     manager.run()

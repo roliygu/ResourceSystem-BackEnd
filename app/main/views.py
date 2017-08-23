@@ -6,8 +6,8 @@ import os
 from flask import render_template, flash, send_file, abort, redirect, url_for
 from flask_login import login_required
 
-from app.service import validate_upload, insert_resource, scan_resource, scan_tag, get_resource, delete_resource, update_resource, get_tag, insert_tag
 from . import main
+from ..service import validate_upload, insert_resource, scan_resource, scan_tag, get_resource, delete_resource, update_resource, get_tag, insert_tag
 from ..forms import UploadForm, ResourceEditForm, TagCreateForm
 
 

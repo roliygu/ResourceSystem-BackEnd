@@ -7,10 +7,14 @@ import uuid
 from flask import make_response
 from werkzeug.datastructures import FileStorage
 
-from app.view_object import ValidateResult
+from .view_object import ValidateResult
 from config import Config
 
-config = Config()
+config = Config.new_instance()
+
+
+def get_config():
+    return config
 
 
 def generate_random_integer():

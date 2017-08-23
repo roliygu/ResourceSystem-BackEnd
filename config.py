@@ -18,3 +18,7 @@ class Config:
         self.upload_base_dir = config["storage"]["base_dir"]
         self.max_file_size = config["storage"]["max_file_size"]
         self.item_num_per_page = int(config["preview_page"]["item_num_per_page"])
+
+    @staticmethod
+    def new_instance():
+        return Config()

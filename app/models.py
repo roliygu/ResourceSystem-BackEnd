@@ -6,9 +6,8 @@ import datetime
 from werkzeug.security import check_password_hash
 from flask_login import UserMixin
 
-from . import db
-from . import login_manager
-from config import Config
+from . import db, login_manager
+from .utils import get_config
 
 DEFAULT_STRING_LENGTH = 128
 DEFAULT_STRING_COL = db.String(DEFAULT_STRING_LENGTH)
@@ -74,5 +73,4 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(id: int):
-    config = Config()
-    return User(config.username, config.password_hash)
+    return User(get_config().username, get_config().password_hash)
