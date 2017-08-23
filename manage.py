@@ -32,7 +32,7 @@ def generate_password_hash():
 
 
 @manager.command
-def profile(length=25, profile_dir='./'):
+def profile(length=25, profile_dir='./profile'):
     from werkzeug.contrib.profiler import ProfilerMiddleware
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[length], profile_dir=profile_dir)
     app.run(host='0.0.0.0', port=50000)
@@ -41,6 +41,13 @@ def profile(length=25, profile_dir='./'):
 @manager.command
 def debug():
     app.run(host='0.0.0.0', port=50000, debug=True)
+
+
+@manager.command
+def stat():
+    import pstats
+    p = pstats.Stats("./profile/prof.txt")
+    p.sort_stats("time").print_stats()
 
 
 if __name__ == '__main__':
