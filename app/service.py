@@ -29,14 +29,14 @@ def insert_resource(form: UploadForm):
     resource.origin_name = file_storage.filename
     resource.path = save_file_storage(file_storage)
     resource.size = getsize(resource.path)
-    insert(resource, now=True)
+    insert(resource, now=False)
     return UploadResult(True, "[{}]上传成功".format(resource.name))
 
 
 def insert_tag(form: TagCreateForm):
     tag = Tag()
     tag.name = form.name.data
-    insert(tag, now=True)
+    insert(tag, now=False)
 
 
 def delete_resource(resource: Resource):
