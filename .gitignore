@@ -103,4 +103,4 @@ ENV/
 nohup.out
 
 resources/config.cfg
-.idea/workspace.xml
+.idea/*
