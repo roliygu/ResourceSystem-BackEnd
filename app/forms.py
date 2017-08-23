@@ -3,7 +3,7 @@
 
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, FileField
+from wtforms import StringField, SubmitField, PasswordField, FileField, SelectMultipleField, SelectField
 from wtforms.validators import DataRequired
 
 
@@ -15,6 +15,7 @@ class LoginForm(FlaskForm):
 
 class UploadForm(FlaskForm):
     name = StringField('资源名', validators=[DataRequired()])
+    tag = SelectMultipleField('标签', validators=[DataRequired()])
     binary = FileField('文件', validators=[DataRequired()])
     submit = SubmitField('确定')
 
@@ -26,4 +27,9 @@ class ResourceEditForm(FlaskForm):
 
 class TagCreateForm(FlaskForm):
     name = StringField('标签名称', validators=[DataRequired()])
+    submit = SubmitField('确定')
+
+
+class SearchForm(FlaskForm):
+    name = SelectField('查询的标签', validators=[DataRequired()])
     submit = SubmitField('确定')

@@ -38,5 +38,10 @@ def profile(length=25, profile_dir='./'):
     app.run(host='0.0.0.0', port=50000)
 
 
+@manager.command
+def debug():
+    app.run(host='0.0.0.0', port=50000, debug=True)
+
+
 if __name__ == '__main__':
     manager.run()

@@ -7,8 +7,8 @@ from flask import render_template, flash, send_file, abort, redirect, url_for
 from flask_login import login_required
 
 from . import main
-from ..service import validate_upload, insert_resource, scan_resource, scan_tag, get_resource, delete_resource, update_resource, get_tag, insert_tag
-from ..forms import UploadForm, ResourceEditForm, TagCreateForm
+from ..service import validate_upload, insert_resource, scan_resource, scan_tag, get_resource, delete_resource, update_resource, get_tag, build_resource_table, insert_tag
+from ..forms import UploadForm, ResourceEditForm, TagCreateForm, SearchForm
 
 
 def redirect_index():
@@ -26,6 +26,7 @@ def index():
 @login_required
 def upload():
     form = UploadForm()
+    form.tag.choices = [(str(tag.id), tag.name) for tag in scan_tag()]
     if form.validate_on_submit():
         validate_res = validate_upload(form)
         if validate_res.success:
@@ -76,6 +77,19 @@ def download(resource_id: int):
     abort(404)
 
 
+@main.route('/resource/search', methods=['GET', 'POST'])
+@login_required
+def search_resource():
+    form = SearchForm()
+    form.name.choices = [(str(tag.id), tag.name) for tag in scan_tag()]
+    if form.validate_on_submit():
+        tag = get_tag(int(form.name.data))
+        resources = tag.resource.all()
+        table = build_resource_table(resources, in_resource=True)
+        return render_template('main/search.html', table=table, form=form)
+    return render_template('main/search.html', form=form, table=build_resource_table([], in_resource=True))
+
+
 @main.route('/tag/create', methods=['GET', 'POST'])
 @login_required
 def create_tag():
@@ -88,5 +102,5 @@ def create_tag():
         insert_tag(form)
         flash("添加标签成功")
         return redirect_index()
-    tag_names = scan_tag()
+    tag_names = [item.name for item in scan_tag()]
     return render_template('main/create_tag.html', form=form, tag_names=tag_names)

@@ -60,6 +60,10 @@ class Tag(db.Model):
     create_time = db.Column(db.TIMESTAMP, default=datetime.datetime.now())
     update_time = db.Column(db.TIMESTAMP, default=datetime.datetime.now())
 
+    @staticmethod
+    def get_by_ids(ids: set):
+        return Tag.query.filter(Tag.id.in_(ids)).all()
+
 
 class User(UserMixin):
     def __init__(self, name, password_hash):

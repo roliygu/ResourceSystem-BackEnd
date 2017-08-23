@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}ResourceSystem - Login{% endblock %}
+{% block page_content %}
+<div class="page-header">
+    <div class="page-header">
+        <h1>检索</h1>
+    </div>
+    {{ wtf.quick_form(form) }}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                {% for col in table.header %}
+                <th>{{ col.value }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table.data %}
+            <tr>
+                {% for col in row %}
+                <td>{{ col.value | safe }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
