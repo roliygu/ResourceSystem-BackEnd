@@ -36,3 +36,16 @@ def save_file_storage(file_storage: FileStorage):
     path = "{}/{}_{}".format(config.upload_base_dir, uuid.uuid1(), file_storage.filename)
     file_storage.save(path)
     return path
+
+
+def wrap_file_size(size: int):
+    if size is None:
+        return "-"
+    if size > 1024 * 1024 * 1024:
+        return "%.2f GB" % (size / (1024 * 1024 * 1024))
+    elif size > 1024 * 1024:
+        return "%.2f MB" % (size / (1024 * 1024))
+    elif size > 1024:
+        return "%.2f KB" % (size / 1024)
+    else:
+        return "%.2f B" % size

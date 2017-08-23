@@ -6,7 +6,7 @@ from flask_login import login_user, logout_user
 
 from . import auth
 from ..forms import LoginForm
-from ..service import validate_user
+from ..service import UserService
 from ..models import load_user
 
 
@@ -15,7 +15,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = load_user(1)
-        validate_res = validate_user(form, user)
+        validate_res = UserService.validate_user(form, user)
         if validate_res.success:
             login_user(user)
             return redirect(request.args.get('next') or url_for('main.index'))

@@ -49,8 +49,21 @@ class Resource(db.Model):
     tags = db.relationship('Tag', secondary=resource_tag_re, backref=db.backref('resource', lazy='dynamic'),
                            lazy='dynamic')
 
-    def get_by_id(self):
-        Resource.query.filter_by(id=self.id).first()
+    @staticmethod
+    def get_by_id(id: int):
+        Resource.query.filter_by(id=id).first()
+
+    def insert(self):
+        self.create_time = datetime.datetime.now()
+        self.update_time = datetime.datetime.now()
+        insert(self)
+
+    def update(self):
+        self.update_time = datetime.datetime.now()
+        update(self)
+
+    def delete(self):
+        delete(self)
 
 
 class Tag(db.Model):
@@ -63,6 +76,9 @@ class Tag(db.Model):
     @staticmethod
     def get_by_ids(ids: set):
         return Tag.query.filter(Tag.id.in_(ids)).all()
+
+    def insert(self):
+        insert(self)
 
 
 class User(UserMixin):

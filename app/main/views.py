@@ -7,8 +7,16 @@ from flask import render_template, flash, send_file, abort, redirect, url_for
 from flask_login import login_required
 
 from . import main
-from ..service import validate_upload, insert_resource, scan_resource, scan_tag, get_resource, delete_resource, update_resource, get_tag, build_resource_table, insert_tag
+from ..service import ResourceService, TagService
 from ..forms import UploadForm, ResourceEditForm, TagCreateForm, SearchForm
+
+template_map = {
+    "index": "main/index.html",
+    "upload": "main/upload.html",
+    "edit": "main/edit.html",
+    "search": "main/search.html",
+    "create_tag": "main/create_tag.html"
+}
 
 
 def redirect_index():
@@ -16,38 +24,37 @@ def redirect_index():
 
 
 @main.route('/')
-@login_required
 def index():
-    table = scan_resource()
-    return render_template('main/index.html', table=table)
+    resources = ResourceService.scan_resources()
+    table = ResourceService.build_resource_table(resources)
+    return render_template(template_map["index"], table=table)
 
 
 @main.route('/resource/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     form = UploadForm()
-    form.tag.choices = [(str(tag.id), tag.name) for tag in scan_tag()]
+    form.tag = TagService.map_scan_tag()
     if form.validate_on_submit():
-        validate_res = validate_upload(form)
+        validate_res = ResourceService.validate_upload(form)
         if validate_res.success:
-            upload_res = insert_resource(form)
+            upload_res = ResourceService.upload_resource(form)
             flash(upload_res.message)
             return redirect_index()
         else:
             flash(validate_res.message)
-    return render_template('main/upload.html', form=form)
+    return render_template(template_map["upload"], form=form)
 
 
 @main.route('/resource/delete/<int:resource_id>', methods=['GET'])
 @login_required
 def delete(resource_id: int):
-    msg = "删除成功"
-    resource = get_resource(resource_id)
+    resource = ResourceService.get_resource(resource_id)
     if resource:
         if os.path.exists(resource.path):
             os.remove(resource.path)
-        delete_resource(resource)
-    flash(msg)
+        ResourceService.delete_resource(resource)
+    flash("删除成功")
     return redirect_index()
 
 
@@ -55,22 +62,22 @@ def delete(resource_id: int):
 @login_required
 def edit(resource_id: int):
     form = ResourceEditForm()
+    form.tag = TagService.map_scan_tag()
     if form.validate_on_submit():
-        resource = get_resource(resource_id)
+        resource = ResourceService.get_resource(resource_id)
         if not resource:
             flash("找不到该资源")
             return redirect_index()
-        resource.name = form.name.data
-        update_resource(resource)
+        ResourceService.update_resource(resource, form)
         flash("更新成功")
         return redirect_index()
-    return render_template('main/edit.html', form=form)
+    return render_template(template_map["edit"], form=form)
 
 
 @main.route('/resource/download/<int:resource_id>', methods=['GET'])
 @login_required
 def download(resource_id: int):
-    resource = get_resource(resource_id)
+    resource = ResourceService.get_resource(resource_id)
     path = resource.path
     if os.path.isfile(path):
         return send_file(path, attachment_filename=resource.origin_name)
@@ -81,13 +88,13 @@ def download(resource_id: int):
 @login_required
 def search_resource():
     form = SearchForm()
-    form.name.choices = [(str(tag.id), tag.name) for tag in scan_tag()]
+    form.name = TagService.map_scan_tag()
     if form.validate_on_submit():
-        tag = get_tag(int(form.name.data))
+        tag = TagService.get_tag(int(form.name.data))
         resources = tag.resource.all()
-        table = build_resource_table(resources, in_resource=True)
-        return render_template('main/search.html', table=table, form=form)
-    return render_template('main/search.html', form=form, table=build_resource_table([], in_resource=True))
+        table = ResourceService.build_resource_table(resources, in_resource=True)
+        return render_template(template_map["search"], table=table, form=form)
+    return render_template(template_map["search"], form=form, table=ResourceService.build_resource_table([], in_resource=True))
 
 
 @main.route('/tag/create', methods=['GET', 'POST'])
@@ -95,12 +102,12 @@ def search_resource():
 def create_tag():
     form = TagCreateForm()
     if form.validate_on_submit():
-        tag = get_tag(form.name.data)
+        tag = TagService.get_tag(form.name.data)
         if tag:
             flash("标签已存在")
             return redirect_index()
-        insert_tag(form)
+        TagService.add_tag(form)
         flash("添加标签成功")
         return redirect_index()
-    tag_names = [item.name for item in scan_tag()]
-    return render_template('main/create_tag.html', form=form, tag_names=tag_names)
+    tag_names = [item.name for item in TagService.scan_tag()]
+    return render_template(template_map["create_tag"], form=form, tag_names=tag_names)
