@@ -5,6 +5,7 @@ import datetime
 
 from werkzeug.security import check_password_hash
 from flask_login import UserMixin
+from sqlalchemy import or_
 
 from . import db, login_manager
 from .utils import get_config
@@ -53,6 +54,11 @@ class Resource(db.Model):
     def get_by_id(id: int):
         Resource.query.filter_by(id=id).first()
 
+    @staticmethod
+    def get_all_by_name(name: str):
+        pattern = "%{}%".format(name)
+        return Resource.query.filter(or_(Resource.name.like(pattern), Resource.origin_name.like(pattern))).all()
+
     def insert(self):
         self.create_time = datetime.datetime.now()
         self.update_time = datetime.datetime.now()
@@ -76,6 +82,15 @@ class Tag(db.Model):
     @staticmethod
     def get_by_ids(ids: set):
         return Tag.query.filter(Tag.id.in_(ids)).all()
+
+    @staticmethod
+    def get_by_name(name: str):
+        pattern = "%{}%".format(name)
+        return Tag.query.filter(Tag.name.like(pattern)).all()
+
+    @staticmethod
+    def scan_tag():
+        return Tag.query.all()
 
     def insert(self):
         insert(self)

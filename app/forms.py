@@ -31,11 +31,7 @@ class TagCreateForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    name = SelectField('查询的标签', validators=[DataRequired()])
+    method = SelectField('查询方式', validators=[DataRequired()])
+    name = StringField('输入', validators=[DataRequired()])
     submit = SubmitField('确定')
 
-    @staticmethod
-    def new_instance():
-        res = SearchForm()
-        res.name = [(str(tag.id), tag.name) for tag in TagService.scan_tag()]
-        return res

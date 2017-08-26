@@ -53,8 +53,12 @@ class ResourceService:
             return resource.update()
 
     @staticmethod
-    def scan_resources(limit=get_config().item_num_per_page):
+    def scan_resources(limit=200):
         return Resource.query.limit(limit)
+
+    @staticmethod
+    def scan_resources_by_name(name: str):
+        return Resource.get_all_by_name(name)
 
     @staticmethod
     def build_resource_table(resources: list, in_resource=False):
@@ -79,7 +83,11 @@ class TagService:
 
     @staticmethod
     def scan_tag():
-        return Tag.query.all()
+        return Tag.scan_tag()
+
+    @staticmethod
+    def get_tags_by_name(name: str):
+        return Tag.get_by_name(name)
 
     @staticmethod
     def get_tag(tag_id: int):
