@@ -22,7 +22,7 @@ def drop_db():
 
 @manager.command
 def run():
-    app.run(host='0.0.0.0', port=50000)
+    app.run(host='0.0.0.0', port=50000, threaded=True)
 
 
 @manager.command
@@ -40,7 +40,7 @@ def profile(length=25, profile_dir='./profile'):
 
 @manager.command
 def debug():
-    app.run(host='0.0.0.0', port=50000, debug=True)
+    app.run(host='0.0.0.0', port=50000, debug=True, threaded=True)
 
 
 @manager.command
